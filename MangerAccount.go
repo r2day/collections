@@ -69,3 +69,15 @@ func (m *ManagerAccountModel) UpdateById(ctx context.Context) error {
 	}
 	return nil
 }
+
+// FindByPhone 通过手机号查找到账号信息
+func (m *ManagerAccountModel) FindByPhone(ctx context.Context) error {
+	coll := db.MDB.Collection(ManagerAccountCollection)
+	// 更新数据库
+	filter := bson.D{{Key: "phone", Value: m.Phone}}
+	err := coll.FindOne(ctx, filter).Decode(m)
+	if err != nil {
+		return err
+	}
+	return nil
+}
