@@ -22,14 +22,18 @@ type ManagerAccountModel struct {
 	CreatedAt string `json:"created_at" bson:"created_at"`
 	// 更新时间
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
-	// 状态
-	Status bool `json:"status"`
+	// 是否开启审核
+	IsRequiredApprove bool `json:"is_required_approve" bson:"is_required_approve"`
+	// 账号状态
+	Status int `json:"status"  bson:"status"`
 
+	// 关键信息
 	// 手机号
 	Phone string `json:"phone"`
 	// 密码
 	Password string `json:"password"  bson:"password"`
 
+	// 更多信息
 	// 账号名称
 	Name string `json:"name"`
 	// 账号Id (自动生成)
@@ -39,13 +43,13 @@ type ManagerAccountModel struct {
 }
 
 // FastSignUp 快速注册
-func (m *ManagerAccountModel) FastSignUp(ctx *context.Context) error {
+func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerAccountCollection)
 
 	// 插入记录
-	_, err := coll.InsertOne(c.Request.Context(), newOne)
+	_, err := coll.InsertOne(ctx, m)
 	if err != nil {
 		return err
 	}
@@ -53,12 +57,12 @@ func (m *ManagerAccountModel) FastSignUp(ctx *context.Context) error {
 	return nil
 }
 
-// UpdateAccountInfo 更新账号信息
-func (m *ManagerAccountModel) UpdateAccountInfo() error {
+// UpdateById 通过id更新数据库
+func (m *ManagerAccountModel) UpdateById(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 更新数据库
 	filter := bson.D{{Key: "_id", Value: m.ID}}
-	_, err = coll.UpdateOne(context.TODO(), filter,
+	_, err := coll.UpdateOne(ctx, filter,
 		bson.D{{Key: "$set", Value: m}})
 	if err != nil {
 		return err
