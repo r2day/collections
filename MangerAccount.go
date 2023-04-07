@@ -67,8 +67,8 @@ func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 
 	// 保存时间设定
-	m.CreatedAt = rtime.FomratTimeAsReader(time.Unix())
-	m.UpdatedAt = rtime.FomratTimeAsReader(time.Unix())
+	m.CreatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
 
 	// 插入记录
 	_, err := coll.InsertOne(ctx, m)
@@ -83,7 +83,7 @@ func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 func (m *ManagerAccountModel) UpdateById(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 更新数据库
-	m.UpdatedAt = rtime.FomratTimeAsReader(time.Unix())
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
 	filter := bson.D{{Key: "_id", Value: m.ID}}
 	_, err := coll.UpdateOne(ctx, filter,
 		bson.D{{Key: "$set", Value: m}})
