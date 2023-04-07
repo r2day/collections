@@ -3,6 +3,7 @@ module github.com/r2day/collections
 go 1.20
 
 require (
+	github.com/r2day/base v1.6.7
 	github.com/r2day/db v0.3.2
 	go.mongodb.org/mongo-driver v1.11.3
 )

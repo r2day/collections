@@ -2,8 +2,11 @@ package collections
 
 import (
 	"context"
+	"time"
 
+	rtime "github.com/r2day/base/time"
 	"github.com/r2day/db"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -37,7 +40,11 @@ type ManagerAccountModel struct {
 	// 一般用于部署在私有化的时候启动
 	// 在其他模式下，merchantId 起到命名空间的作用
 	MerchantId string `json:"merchant_id"  bson:"merchant_id"`
-
+	// 是否是管理员
+	// 一般standalone 模式下，是通过读取部署时配置的 ADMIN_PHONE
+	// 如果与配置的手机号匹配，那么就可以定义为管理员
+	// 如果是其他的模式，一般需要超级商户平台授权后才能成为管理员
+	IsAdmin bool `json:"is_admin"  bson:"is_admin"`
 	// 关键信息
 	// 手机号
 	Phone string `json:"phone"`
@@ -59,6 +66,10 @@ func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerAccountCollection)
 
+	// 保存时间设定
+	m.CreatedAt = rtime.FomratTimeAsReader(time.Unix())
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Unix())
+
 	// 插入记录
 	_, err := coll.InsertOne(ctx, m)
 	if err != nil {
@@ -72,6 +83,7 @@ func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 func (m *ManagerAccountModel) UpdateById(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 更新数据库
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Unix())
 	filter := bson.D{{Key: "_id", Value: m.ID}}
 	_, err := coll.UpdateOne(ctx, filter,
 		bson.D{{Key: "$set", Value: m}})
