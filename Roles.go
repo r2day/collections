@@ -33,6 +33,8 @@ type RoleModel struct {
 	// 账号状态
 	Status int `json:"status"  bson:"status"`
 
+	// 商户号
+	MerchantId string `json:"merchant_id"  bson:"merchant_id"`
 	// 更多信息
 	// 角色名称
 	Name string `json:"name"`
