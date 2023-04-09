@@ -132,7 +132,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int
 }
 
 // Detail 详情
-func (m *UniversalModel) Detail(ctx context.Context, id string) error {
+func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel, error) {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
