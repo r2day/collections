@@ -2,10 +2,14 @@ package collections
 
 import (
 	"context"
+	"fmt"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	
+
 	rtime "github.com/r2day/base/time"
 	"github.com/r2day/db"
 
@@ -84,7 +88,7 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (m *UniversalModel) List (ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, error) {
+func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, error) {
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 声明数据库过滤器
 	// var filter bson.D
@@ -117,7 +121,7 @@ func (m *UniversalModel) List (ctx context.Context, merchantId string, offset in
 	// 绑定查询结果
 	results := make([]*UniversalModel, 0)
 	if err = cursor.All(context.TODO(), &results); err != nil {
-		return nil, err;
+		return nil, err
 	}
 
 	fmt.Println("--results->", results)
