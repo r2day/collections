@@ -3,6 +3,7 @@ package collections
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/r2day/db"
 )
 
 const (
@@ -71,7 +72,7 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 
 	if result.DeletedCount < 1 {
 		log.WithField("id", id).Error("delete failed")
-		return 
+		return err
 	}
 
 	return nil
