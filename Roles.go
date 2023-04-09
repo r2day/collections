@@ -49,7 +49,7 @@ type RoleModel struct {
 type UniversalModel = RoleModel
 
 // SimpleSave 快速保存
-func (m *UniversalModel) SimpleSave(ctx context.Context) error {
+func (m *UniversalModel) SimpleSave(ctx context.Context) (string, error) {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
@@ -59,12 +59,12 @@ func (m *UniversalModel) SimpleSave(ctx context.Context) error {
 	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
 
 	// 插入记录
-	_, err := coll.InsertOne(ctx, m)
+	result, err := coll.InsertOne(ctx, m)
 	if err != nil {
-		return err
+		return "", err
 	}
-
-	return nil
+	stringObjectID := result.InsertedID.(primitive.ObjectID).Hex()
+	return stringObjectID, nil
 }
 
 // Delete 快速删除
@@ -158,7 +158,8 @@ func (m *UniversalModel) Update(ctx context.Context, id string) error {
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	objId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objId}}
-
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
+	
 	result, err := coll.UpdateOne(ctx, filter,
 		bson.D{{Key: "$set", Value: m}})
 	if err != nil {
