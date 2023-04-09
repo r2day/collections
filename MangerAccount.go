@@ -58,9 +58,11 @@ type ManagerAccountModel struct {
 	AccountId string `json:"account_id"  bson:"account_id"`
 	// 邮箱
 	Email string `json:"email"  bson:"email"`
+	// 角色名称列表
+	Roles []string `json:"roles"  bson:"roles"`
 }
 
-// FastSignUp 快速注册
+// SimpleSave 快速保存
 func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
@@ -75,7 +77,6 @@ func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
