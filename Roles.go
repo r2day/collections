@@ -2,6 +2,7 @@ package collections
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -148,4 +149,28 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 		return result, err
 	}
 	return result, nil
+}
+
+// Update 更新
+func (m *UniversalModel) Update(ctx context.Context, id string) error {
+	// TODO result using custom struct instead of bson.M
+	// because you should avoid to export something to customers
+	coll := db.MDB.Collection(ManagerRoleCollection)
+	// 绑定查询结果
+	result := &UniversalModel{}
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+
+	result, err := coll.UpdateOne(ctx, filter,
+		bson.D{{Key: "$set", Value: m}})
+	if err != nil {
+		log.WithField("id", id).Error(err)
+		return err
+	}
+
+	if result.MatchedCount < 1 {
+		return errors.New("no matched record")
+	}
+
+	return nil
 }
