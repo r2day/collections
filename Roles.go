@@ -32,7 +32,7 @@ type RoleModel struct {
 	// 更新时间
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
 	// 账号状态
-	Status int `json:"status"  bson:"status"`
+	Status bool `json:"status"  bson:"status"`
 
 	// 商户号
 	MerchantId string `json:"merchant_id"  bson:"merchant_id"`
