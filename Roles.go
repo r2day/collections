@@ -130,3 +130,22 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int
 	return results, totalCounter, nil
 
 }
+
+// Detail 详情
+func (m *UniversalModel) Detail(ctx context.Context, id string) error {
+	// TODO result using custom struct instead of bson.M
+	// because you should avoid to export something to customers
+	coll := db.MDB.Collection(ManagerRoleCollection)
+	// 绑定查询结果
+	result := &UniversalModel{}
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+
+	err := coll.FindOne(context.TODO(), filter).Decode(&result)
+
+	if err != nil {
+		log.WithField("id", id).Error(err)
+		return result, err
+	}
+	return result, nil
+}
