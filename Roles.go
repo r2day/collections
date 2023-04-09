@@ -88,7 +88,7 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, error) {
+func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, int64, error) {
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 声明数据库过滤器
 	// var filter bson.D
@@ -96,10 +96,10 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int
 	// 获取总数（含过滤规则）
 	totalCounter, err := coll.CountDocuments(context.TODO(), filter)
 	if err == mongo.ErrNoDocuments {
-		return nil, err
+		return nil, 0, err
 	}
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// 进行必要分页处理
@@ -112,19 +112,19 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int
 	// 获取数据列表
 	cursor, err := coll.Find(ctx, filter, opt)
 	if err == mongo.ErrNoDocuments {
-		return nil, err
+		return nil, totalCounter, err
 	}
 	if err != nil {
-		return nil, err
+		return nil, totalCounter, err
 	}
 
 	// 绑定查询结果
 	results := make([]*UniversalModel, 0)
 	if err = cursor.All(context.TODO(), &results); err != nil {
-		return nil, err
+		return nil, totalCounter, err
 	}
 
 	fmt.Println("--results->", results)
-	return results, nil
+	return results, totalCounter, nil
 
 }
