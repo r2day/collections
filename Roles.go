@@ -156,8 +156,6 @@ func (m *UniversalModel) Update(ctx context.Context, id string) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
-	// 绑定查询结果
-	result := &UniversalModel{}
 	objId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objId}}
 
