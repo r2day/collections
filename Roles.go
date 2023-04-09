@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"github.com/r2day/db"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
