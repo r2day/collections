@@ -62,8 +62,13 @@ type ManagerAccountModel struct {
 	Roles []string `json:"roles"  bson:"roles"`
 }
 
+// 定义类型名称（别名）
+// 新接口只需要修改这里即可
+// 以下代码可以复用
+type universalModel = ManagerAccountModel
+
 // SimpleSave 快速保存
-func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
+func (m *universalModel) SimpleSave(ctx context.Context) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerAccountCollection)
@@ -81,7 +86,7 @@ func (m *ManagerAccountModel) SimpleSave(ctx context.Context) error {
 }
 
 // UpdateById 通过id更新数据库
-func (m *ManagerAccountModel) UpdateById(ctx context.Context) error {
+func (m *universalModel) UpdateById(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 更新数据库
 	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
@@ -95,7 +100,7 @@ func (m *ManagerAccountModel) UpdateById(ctx context.Context) error {
 }
 
 // FindByPhone 通过手机号查找到账号信息
-func (m *ManagerAccountModel) FindByPhone(ctx context.Context) error {
+func (m *universalModel) FindByPhone(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 更新数据库
 	filter := bson.D{{Key: "phone", Value: m.Phone}}
@@ -107,7 +112,7 @@ func (m *ManagerAccountModel) FindByPhone(ctx context.Context) error {
 }
 
 // FindByAccountId 通过手机号查找到账号信息
-func (m *ManagerAccountModel) FindByAccountId(ctx context.Context) error {
+func (m *universalModel) FindByAccountId(ctx context.Context) error {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 更新数据库
 	filter := bson.D{{Key: "account_id", Value: m.AccountId}}
@@ -115,5 +120,113 @@ func (m *ManagerAccountModel) FindByAccountId(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+
+// Delete 快速删除
+func (m *universalModel) Delete(ctx context.Context, id string) error {
+	// TODO result using custom struct instead of bson.M
+	// because you should avoid to export something to customers
+	coll := db.MDB.Collection(ManagerAccountCollection)
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+
+	// 执行删除
+	result, err := coll.DeleteOne(ctx, filter)
+
+	if err != nil {
+		log.WithField("id", id).Error(err)
+		return err
+	}
+
+	if result.DeletedCount < 1 {
+		log.WithField("id", id).Error("delete failed")
+		return err
+	}
+
+	return nil
+}
+
+func (m *universalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, int64, error) {
+	coll := db.MDB.Collection(ManagerAccountCollection)
+	// 声明数据库过滤器
+	// var filter bson.D
+	filter := bson.D{{Key: "merchant_id", Value: merchantId}}
+	// 获取总数（含过滤规则）
+	totalCounter, err := coll.CountDocuments(context.TODO(), filter)
+	if err == mongo.ErrNoDocuments {
+		return nil, 0, err
+	}
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// 进行必要分页处理
+	opt := options.Find()
+	// 排序方式
+	opt.SetSort(bson.M{"name": 1})
+	opt.SetSkip(offset)
+	opt.SetLimit(limit)
+
+	// 获取数据列表
+	cursor, err := coll.Find(ctx, filter, opt)
+	if err == mongo.ErrNoDocuments {
+		return nil, totalCounter, err
+	}
+	if err != nil {
+		return nil, totalCounter, err
+	}
+
+	// 绑定查询结果
+	results := make([]*UniversalModel, 0)
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		return nil, totalCounter, err
+	}
+
+	fmt.Println("--results->", results)
+	return results, totalCounter, nil
+
+}
+
+// Detail 详情
+func (m *universalModel) Detail(ctx context.Context, id string) (*UniversalModel, error) {
+	// TODO result using custom struct instead of bson.M
+	// because you should avoid to export something to customers
+	coll := db.MDB.Collection(ManagerAccountCollection)
+	// 绑定查询结果
+	result := &UniversalModel{}
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+
+	err := coll.FindOne(context.TODO(), filter).Decode(&result)
+
+	if err != nil {
+		log.WithField("id", id).Error(err)
+		return result, err
+	}
+	return result, nil
+}
+
+// Update 更新
+func (m *universalModel) Update(ctx context.Context, id string) error {
+	// TODO result using custom struct instead of bson.M
+	// because you should avoid to export something to customers
+	coll := db.MDB.Collection(ManagerAccountCollection)
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
+	
+	result, err := coll.UpdateOne(ctx, filter,
+		bson.D{{Key: "$set", Value: m}})
+	if err != nil {
+		log.WithField("id", id).Error(err)
+		return err
+	}
+
+	if result.MatchedCount < 1 {
+		return errors.New("no matched record")
+	}
+
 	return nil
 }
