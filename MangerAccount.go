@@ -39,7 +39,7 @@ type ManagerAccountModel struct {
 	// 是否开启审核
 	IsRequiredApprove bool `json:"is_required_approve" bson:"is_required_approve"`
 	// 账号状态
-	Status int `json:"status"  bson:"status"`
+	Status bool `json:"status"  bson:"status"`
 	// 商户id
 	// 如果用户部署为单机模式，则商户号为固定值
 	// 一般用于部署在私有化的时候启动
