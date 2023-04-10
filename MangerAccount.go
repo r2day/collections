@@ -183,7 +183,7 @@ func (m *universalModel) List(ctx context.Context, merchantId string, offset int
 	}
 
 	// 绑定查询结果
-	results := make([]*UniversalModel, 0)
+	results := make([]*universalModel, 0)
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		return nil, totalCounter, err
 	}
