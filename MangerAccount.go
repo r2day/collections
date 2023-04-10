@@ -2,13 +2,18 @@ package collections
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	rtime "github.com/r2day/base/time"
 	"github.com/r2day/db"
+	log "github.com/sirupsen/logrus"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
@@ -123,7 +128,6 @@ func (m *universalModel) FindByAccountId(ctx context.Context) error {
 	return nil
 }
 
-
 // Delete 快速删除
 func (m *universalModel) Delete(ctx context.Context, id string) error {
 	// TODO result using custom struct instead of bson.M
@@ -216,7 +220,7 @@ func (m *universalModel) Update(ctx context.Context, id string) error {
 	objId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objId}}
 	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
-	
+
 	result, err := coll.UpdateOne(ctx, filter,
 		bson.D{{Key: "$set", Value: m}})
 	if err != nil {
