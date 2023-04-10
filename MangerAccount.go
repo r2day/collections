@@ -199,7 +199,7 @@ func (m *universalModel) Detail(ctx context.Context, id string) (*universalModel
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 绑定查询结果
-	result := &UniversalModel{}
+	result := &universalModel{}
 	objId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objId}}
 
