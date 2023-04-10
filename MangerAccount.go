@@ -152,7 +152,7 @@ func (m *universalModel) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (m *universalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, int64, error) {
+func (m *universalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*universalModel, int64, error) {
 	coll := db.MDB.Collection(ManagerAccountCollection)
 	// 声明数据库过滤器
 	// var filter bson.D
@@ -194,7 +194,7 @@ func (m *universalModel) List(ctx context.Context, merchantId string, offset int
 }
 
 // Detail 详情
-func (m *universalModel) Detail(ctx context.Context, id string) (*UniversalModel, error) {
+func (m *universalModel) Detail(ctx context.Context, id string) (*universalModel, error) {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerAccountCollection)
