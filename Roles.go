@@ -3,7 +3,6 @@ package collections
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -126,8 +125,6 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		return nil, totalCounter, err
 	}
-
-	fmt.Println("--results->", results)
 	return results, totalCounter, nil
 
 }
@@ -146,7 +143,7 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 
 	if err != nil {
 		log.WithField("id", id).Error(err)
-		return result, err
+		return nil, err
 	}
 	return result, nil
 }
@@ -159,7 +156,7 @@ func (m *UniversalModel) Update(ctx context.Context, id string) error {
 	objId, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objId}}
 	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
-	
+
 	result, err := coll.UpdateOne(ctx, filter,
 		bson.D{{Key: "$set", Value: m}})
 	if err != nil {
