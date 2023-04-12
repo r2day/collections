@@ -2,7 +2,6 @@ package collections
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"time"
 
@@ -107,10 +106,10 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 		// 判断是否是通过id查询
 		if m.ResourceName() == key {
 			// string to array
-			idSlice := make([]string, 0)
-			err := json.Unmarshal([]byte(val), &idSlice)
+			// idSlice := make([]string, 0)
+			// err := json.Unmarshal([]byte(val), &idSlice)
 
-			results, err = m.GetMany(ctx, idSlice)
+			results, err := m.GetMany(ctx, val)
 			if err != nil {
 				log.Error(err)
 				return nil, 0, err
