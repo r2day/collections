@@ -2,9 +2,9 @@ package collections
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"time"
-	"encoding/json"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -116,7 +116,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 				return nil, 0, err
 			}
 			// results = append(results, ...result)
-			return results, len(results), nil
+			return results, int64(len(results)), nil
 		} else {
 			bm := bson.E{Key: key, Value: val}
 			filters = append(filters, bm)
@@ -188,13 +188,13 @@ func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*Universa
 
 	for _, i := range ids {
 		objId, _ := primitive.ObjectIDFromHex(i)
-		objIds = append(objIds, objId)
+		objIds = append(objIds, &objId)
 	}
 	// objId, _ := primitive.ObjectIDFromHex(id)
 	// filter := bson.D{{Key: "_id", Value: objId}}
 
 	// err := coll.FindOne(context.TODO(), filter).Decode(&result)
-	err := c.Find(ctx, bson.M{"_id": bson.M{"$in": objIds}}).All(&results)
+	err := coll.Find(ctx, bson.M{"_id": bson.M{"$in": objIds}}).All(&results)
 
 	if err != nil {
 		log.WithField("ids", ids).Error(err)
