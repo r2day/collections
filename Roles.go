@@ -12,6 +12,7 @@ import (
 
 	rtime "github.com/r2day/base/time"
 	"github.com/r2day/db"
+	"github.com/r2day/rest"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -90,13 +91,19 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int64, limit int64) ([]*UniversalModel, int64, error) {
+func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams *rest.UrlParams) ([]*UniversalModel, int64, error) {
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 声明数据库过滤器
 	// var filter bson.D
-	filter := bson.D{{Key: "merchant_id", Value: merchantId}}
+	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
+	for key, val := range urlParams.FilterMap {
+		filters = append(filters, {Key: key, Value: val})
+
+	}
+	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
+	log.WithField("filters", filters).Debug("check if filters is ok")
 	// 获取总数（含过滤规则）
-	totalCounter, err := coll.CountDocuments(context.TODO(), filter)
+	totalCounter, err := coll.CountDocuments(context.TODO(), filters)
 	if err == mongo.ErrNoDocuments {
 		return nil, 0, err
 	}
@@ -107,12 +114,12 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, offset int
 	// 进行必要分页处理
 	opt := options.Find()
 	// 排序方式
-	opt.SetSort(bson.M{"name": 1})
-	opt.SetSkip(offset)
-	opt.SetLimit(limit)
+	opt.SetSort(bson.M{urlParams.Sort.Key: urlParams.Sort.SortType})
+	opt.SetSkip(urlParams.Range.Offset)
+	opt.SetLimit(urlParams.Range.Limit)
 
 	// 获取数据列表
-	cursor, err := coll.Find(ctx, filter, opt)
+	cursor, err := coll.Find(ctx, filters, opt)
 	if err == mongo.ErrNoDocuments {
 		return nil, totalCounter, err
 	}
@@ -147,6 +154,26 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 	}
 	return result, nil
 }
+
+// GetMany 获取条件查询的结果
+func (m *UniversalModel) GetMany(ctx context.Context, id string) (*UniversalModel, error) {
+	// TODO result using custom struct instead of bson.M
+	// because you should avoid to export something to customers
+	coll := db.MDB.Collection(ManagerRoleCollection)
+	// 绑定查询结果
+	result := &UniversalModel{}
+	objId, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objId}}
+
+	err := coll.FindOne(context.TODO(), filter).Decode(&result)
+
+	if err != nil {
+		log.WithField("id", id).Error(err)
+		return nil, err
+	}
+	return result, nil
+}
+
 
 // Update 更新
 func (m *UniversalModel) Update(ctx context.Context, id string) error {
