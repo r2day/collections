@@ -194,10 +194,14 @@ func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*Universa
 	// filter := bson.D{{Key: "_id", Value: objId}}
 
 	// err := coll.FindOne(context.TODO(), filter).Decode(&result)
-	err := coll.Find(ctx, bson.M{"_id": bson.M{"$in": objIds}}).All(&results)
+	cursor, err := coll.Find(ctx, bson.M{"_id": bson.M{"$in": objIds}})
 
 	if err != nil {
 		log.WithField("ids", ids).Error(err)
+		return nil, err
+	}
+
+	if err = cursor.All(ctx, &results); err != nil {
 		return nil, err
 	}
 	return results, nil
