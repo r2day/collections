@@ -98,24 +98,20 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 
 func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams *rest.UrlParams) ([]*UniversalModel, int64, error) {
 	coll := db.MDB.Collection(ManagerRoleCollection)
+	// 绑定查询结果
+	results := make([]*UniversalModel, 0)
 	// 声明数据库过滤器
-	// var filter bson.D
-	// var filters []bson.M
-
-	// 	var compoundIndex bson.D
-	// for _, field := range fields {
-	//     compoundIndex = append(compoundIndex, bson.E{Key: field, Value: 1})
-	// }
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
+		// 判断是否是通过id查询
 		if m.ResourceName() == key {
-			objId, err := primitive.ObjectIDFromHex(val)
+			result, err := m.Detail(ctx, val)
 			if err != nil {
 				log.Error(err)
 				return nil, 0, err
 			}
-			filters = bson.D{{Key: "_id", Value: objId}}
-			break
+			results = append(results, result)
+			return results, 1, nil
 		} else {
 			bm := bson.E{Key: key, Value: val}
 			filters = append(filters, bm)
@@ -149,8 +145,6 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 		return nil, totalCounter, err
 	}
 
-	// 绑定查询结果
-	results := make([]*UniversalModel, 0)
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		return nil, totalCounter, err
 	}
