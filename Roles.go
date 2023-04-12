@@ -98,7 +98,8 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	// var filters []bson.M
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
-		filters = append(filters, bson.M{Key: key, Value: val})
+		bm := bson.M{key, val}
+		filters = append(filters, bm)
 
 	}
 	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
@@ -116,8 +117,8 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	opt := options.Find()
 	// 排序方式
 	opt.SetSort(bson.M{urlParams.Sort.Key: urlParams.Sort.SortType})
-	opt.SetSkip(urlParams.Range.Offset)
-	opt.SetLimit(urlParams.Range.Limit)
+	opt.SetSkip(int64(urlParams.Range.Offset))
+	opt.SetLimit(int64(urlParams.Range.Limit))
 
 	// 获取数据列表
 	cursor, err := coll.Find(ctx, filters, opt)
