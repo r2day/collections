@@ -108,18 +108,18 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	// }
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
-		if m.ResourceName() == key {
-			objId, err := primitive.ObjectIDFromHex(val)
-			if err != nil {
-				log.Error(err)
-				return nil, 0, err
-			}
-			bm := bson.E{Key: "_id", Value: objId}
-			filters = append(filters, bm)
-		} else {
-			bm := bson.E{Key: key, Value: val}
-			filters = append(filters, bm)
+		// if m.ResourceName() == key {
+		objId, err := primitive.ObjectIDFromHex(val)
+		if err != nil {
+			log.Error(err)
+			return nil, 0, err
 		}
+		bm := bson.E{Key: "_id", Value: objId}
+		filters = append(filters, bm)
+		// } else {
+		// 	bm := bson.E{Key: key, Value: val}
+		// 	filters = append(filters, bm)
+		// }
 
 	}
 	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
