@@ -109,7 +109,11 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
 		if m.ResourceName() == key {
-			objId, _ := primitive.ObjectIDFromHex(val)
+			objId, err := primitive.ObjectIDFromHex(val)
+			if err != nil {
+				log.Error(err)
+				return nil, 0, err
+			}
 			bm := bson.E{Key: "_id", Value: objId}
 			filters = append(filters, bm)
 		} else {
@@ -119,7 +123,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 
 	}
 	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
-	log.WithField("filters", filters).Debug("check if filters is ok")
+	log.WithField("filters", filters).Info("############")
 	// 获取总数（含过滤规则）
 	totalCounter, err := coll.CountDocuments(context.TODO(), filters)
 	if err == mongo.ErrNoDocuments {
