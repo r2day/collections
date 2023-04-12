@@ -48,6 +48,11 @@ type RoleModel struct {
 // 以下代码可以复用
 type UniversalModel = RoleModel
 
+// ResourceName 返回资源名称
+func (m *UniversalModel) ResourceName() string {
+	return "roles"
+}
+
 // SimpleSave 快速保存
 func (m *UniversalModel) SimpleSave(ctx context.Context) (string, error) {
 	// TODO result using custom struct instead of bson.M
@@ -103,8 +108,14 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	// }
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
-		bm := bson.E{Key: key, Value: val}
-		filters = append(filters, bm)
+		if m.ResourceName() == key {
+			objId, _ := primitive.ObjectIDFromHex(_id)
+			bm := bson.E{Key: "_id", Value: objId}
+			filters = append(filters, bm)
+		} else {
+			bm := bson.E{Key: key, Value: val}
+			filters = append(filters, bm)
+		}
 
 	}
 	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
