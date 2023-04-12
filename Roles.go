@@ -136,7 +136,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	// 进行必要分页处理
 	opt := options.Find()
 	// 排序方式
-	opt.SetSort(bson.M{urlParams.Sort.Key: urlParams.Sort.SortType})
+	// opt.SetSort(bson.M{urlParams.Sort.Key: urlParams.Sort.SortType})
 	opt.SetSkip(int64(urlParams.Range.Offset))
 	opt.SetLimit(int64(urlParams.Range.Limit))
 
