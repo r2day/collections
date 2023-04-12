@@ -96,9 +96,14 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	// 声明数据库过滤器
 	// var filter bson.D
 	// var filters []bson.M
+
+	// 	var compoundIndex bson.D
+	// for _, field := range fields {
+	//     compoundIndex = append(compoundIndex, bson.E{Key: field, Value: 1})
+	// }
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
-		bm := bson.M{key, val}
+		bm := bson.E{Key: key, Value: val}
 		filters = append(filters, bm)
 
 	}
