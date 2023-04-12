@@ -107,7 +107,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	//     compoundIndex = append(compoundIndex, bson.E{Key: field, Value: 1})
 	// }
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
-	for key, val := range urlParams.FilterMap {
+	for _, val := range urlParams.FilterMap {
 		// if m.ResourceName() == key {
 		objId, err := primitive.ObjectIDFromHex(val)
 		if err != nil {
