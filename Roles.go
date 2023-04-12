@@ -105,18 +105,21 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	for key, val := range urlParams.FilterMap {
 		// 判断是否是通过id查询
 		if m.ResourceName() == key {
-			result, err := m.Detail(ctx, val)
+			// string to array
+			idSlice := make([]string, 0)
+			err := json.Unmarshal([]byte(val), &idSlice)
+
+			results, err = m.GetMany(ctx, val)
 			if err != nil {
 				log.Error(err)
 				return nil, 0, err
 			}
-			results = append(results, result)
-			return results, 1, nil
+			// results = append(results, ...result)
+			return results, len(results), nil
 		} else {
 			bm := bson.E{Key: key, Value: val}
 			filters = append(filters, bm)
 		}
-
 	}
 	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
 	log.WithField("filters", filters).Info("############")
@@ -133,6 +136,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	opt := options.Find()
 	// 排序方式
 	// opt.SetSort(bson.M{urlParams.Sort.Key: urlParams.Sort.SortType})
+
 	opt.SetSkip(int64(urlParams.Range.Offset))
 	opt.SetLimit(int64(urlParams.Range.Limit))
 
@@ -141,6 +145,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	if err == mongo.ErrNoDocuments {
 		return nil, totalCounter, err
 	}
+
 	if err != nil {
 		return nil, totalCounter, err
 	}
@@ -172,22 +177,29 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 }
 
 // GetMany 获取条件查询的结果
-func (m *UniversalModel) GetMany(ctx context.Context, id string) (*UniversalModel, error) {
+func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*UniversalModel, error) {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 绑定查询结果
-	result := &UniversalModel{}
-	objId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objId}}
+	results := make([]*UniversalModel, 0)
+	objIds := make([]*primitive.ObjectID, 0)
 
-	err := coll.FindOne(context.TODO(), filter).Decode(&result)
+	for _, i := range ids {
+		objId, _ := primitive.ObjectIDFromHex(i)
+		results = append(results, objId)
+	}
+	// objId, _ := primitive.ObjectIDFromHex(id)
+	// filter := bson.D{{Key: "_id", Value: objId}}
+
+	// err := coll.FindOne(context.TODO(), filter).Decode(&result)
+	err := c.Find(bson.M{"_id": bson.M{"$in": objIds}}).All(&results)
 
 	if err != nil {
-		log.WithField("id", id).Error(err)
+		log.WithField("ids", ids).Error(err)
 		return nil, err
 	}
-	return result, nil
+	return results, nil
 }
 
 // Update 更新
