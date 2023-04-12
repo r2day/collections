@@ -114,8 +114,8 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 				log.Error(err)
 				return nil, 0, err
 			}
-			bm := bson.E{Key: "_id", Value: objId}
-			filters = append(filters, bm)
+			filters = bson.D{{Key: "_id", Value: objId}}
+			break
 		} else {
 			bm := bson.E{Key: key, Value: val}
 			filters = append(filters, bm)
