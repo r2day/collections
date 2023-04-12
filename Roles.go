@@ -22,6 +22,14 @@ const (
 	ManagerRoleCollection = "sys_manage_role"
 )
 
+// ApiInfo 接口信息
+type ApiInfo struct {
+	// 路径
+	Path string `json:"path" bson:"path"`
+	// 名称
+	Name string `json:"name" bson:"name"`
+}
+
 // RoleModel 角色模型
 type RoleModel struct {
 	// 创建时（用户上传的数据为空，所以默认可以不传该值)
@@ -40,7 +48,7 @@ type RoleModel struct {
 	// 角色名称
 	Name string `json:"name"`
 	// AccessApi 可访问的api列表
-	AccessApi []string `json:"access_api"  bson:"access_api"`
+	AccessApi []ApiInfo `json:"access_api"  bson:"access_api"`
 }
 
 // 定义类型名称（别名）
