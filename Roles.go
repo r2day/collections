@@ -28,6 +28,8 @@ type ApiInfo struct {
 	Path string `json:"path" bson:"path"`
 	// 名称
 	Name string `json:"name" bson:"name"`
+	// 状态
+	Status bool `json:"status" bson:"status"`
 }
 
 // RoleModel 角色模型
