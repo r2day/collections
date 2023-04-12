@@ -95,9 +95,10 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 声明数据库过滤器
 	// var filter bson.D
+	// var filters []bson.M
 	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
 	for key, val := range urlParams.FilterMap {
-		filters = append(filters, {Key: key, Value: val})
+		filters = append(filters, bson.M{Key: key, Value: val})
 
 	}
 	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
@@ -173,7 +174,6 @@ func (m *UniversalModel) GetMany(ctx context.Context, id string) (*UniversalMode
 	}
 	return result, nil
 }
-
 
 // Update 更新
 func (m *UniversalModel) Update(ctx context.Context, id string) error {
