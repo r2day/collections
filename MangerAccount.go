@@ -3,7 +3,6 @@ package collections
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	rtime "github.com/r2day/base/time"
@@ -187,8 +186,6 @@ func (m *universalModel) List(ctx context.Context, merchantId string, offset int
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		return nil, totalCounter, err
 	}
-
-	fmt.Println("--results->", results)
 	return results, totalCounter, nil
 
 }
