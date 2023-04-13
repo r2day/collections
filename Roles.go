@@ -28,8 +28,10 @@ type ApiInfo struct {
 	Path string `json:"path" bson:"path"`
 	// 名称
 	Name string `json:"name" bson:"name"`
-	// 状态
-	Status bool `json:"status" bson:"status"`
+	// 是否禁用
+	Disable bool `json:"disable" bson:"disable"`
+	// 是否可以访问详情
+	CanViewDetail bool `json:"can_view_detail" bson:"can_view_detail"`
 }
 
 // RoleModel 角色模型
