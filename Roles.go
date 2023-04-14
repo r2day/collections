@@ -18,20 +18,25 @@ import (
 )
 
 const (
-	// 管理员角色
+	// ManagerRoleCollection 角色数据表
 	ManagerRoleCollection = "sys_manage_role"
 )
 
-// ApiInfo 接口信息
-type ApiInfo struct {
+// APIInfo 接口信息
+type APIInfo struct {
 	// 路径
 	Path string `json:"path" bson:"path"`
 	// 名称
 	Name string `json:"name" bson:"name"`
+	// 描述
+	Desc string `json:"desc" bson:"desc"`
 	// 是否禁用
 	Disable bool `json:"disable" bson:"disable"`
 	// 是否可以访问详情
 	CanViewDetail bool `json:"can_view_detail" bson:"can_view_detail"`
+	// 是否在sidebar中隐藏
+	// 默认false， 表示默认不隐藏
+	HideOnSidebar bool `json:"hide_on_sidebar" bson:"hide_on_sidebar"`
 }
 
 // RoleModel 角色模型
@@ -47,15 +52,15 @@ type RoleModel struct {
 	Status bool `json:"status"  bson:"status"`
 
 	// 商户号
-	MerchantId string `json:"merchant_id"  bson:"merchant_id"`
+	MerchantID string `json:"merchant_id"  bson:"merchant_id"`
 	// 更多信息
 	// 角色名称
 	Name string `json:"name"`
 	// AccessApi 可访问的api列表
-	AccessApi []ApiInfo `json:"access_api"  bson:"access_api"`
+	AccessAPI []APIInfo `json:"access_api"  bson:"access_api"`
 }
 
-// 定义类型名称（别名）
+// UniversalModel 定义类型名称（别名）
 // 新接口只需要修改这里即可
 // 以下代码可以复用
 type UniversalModel = RoleModel
@@ -89,8 +94,8 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
-	objId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objId}}
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objID}}
 
 	// 执行删除
 	result, err := coll.DeleteOne(ctx, filter)
@@ -108,32 +113,28 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams *rest.UrlParams) ([]*UniversalModel, int64, error) {
+// List 获取列表
+func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams *rest.UrlParams) ([]*UniversalModel, int64, error) {
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 绑定查询结果
 	results := make([]*UniversalModel, 0)
 	// 声明数据库过滤器
-	filters := bson.D{{Key: "merchant_id", Value: merchantId}}
+	filters := bson.D{{Key: "merchant_id", Value: merchantID}}
 	for key, val := range urlParams.FilterMap {
 		// 判断是否是通过id查询
 		if m.ResourceName() == key {
 			// string to array
-			// idSlice := make([]string, 0)
-			// err := json.Unmarshal([]byte(val), &idSlice)
-
 			results, err := m.GetMany(ctx, val)
 			if err != nil {
 				log.Error(err)
 				return nil, 0, err
 			}
-			// results = append(results, ...result)
 			return results, int64(len(results)), nil
 		} else {
 			bm := bson.E{Key: key, Value: val}
 			filters = append(filters, bm)
 		}
 	}
-	// filter := bson.D{{Key: "merchant_id", Value: merchantId}}
 	log.WithField("filters", filters).Info("############")
 	// 获取总数（含过滤规则）
 	totalCounter, err := coll.CountDocuments(context.TODO(), filters)
@@ -147,7 +148,11 @@ func (m *UniversalModel) List(ctx context.Context, merchantId string, urlParams 
 	// 进行必要分页处理
 	opt := options.Find()
 	// 排序方式
-	// opt.SetSort(bson.M{urlParams.Sort.Key: urlParams.Sort.SortType})
+	if urlParams.Sort.SortType == rest.AES {
+		opt.SetSort(bson.M{urlParams.Sort.Key: -1})
+	} else {
+		opt.SetSort(bson.M{urlParams.Sort.Key: 1})
+	}
 
 	opt.SetSkip(int64(urlParams.Range.Offset))
 	opt.SetLimit(int64(urlParams.Range.Limit))
@@ -176,8 +181,8 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 	coll := db.MDB.Collection(ManagerRoleCollection)
 	// 绑定查询结果
 	result := &UniversalModel{}
-	objId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objId}}
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objID}}
 
 	err := coll.FindOne(context.TODO(), filter).Decode(&result)
 
@@ -198,13 +203,9 @@ func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*Universa
 	objIds := make([]*primitive.ObjectID, 0)
 
 	for _, i := range ids {
-		objId, _ := primitive.ObjectIDFromHex(i)
-		objIds = append(objIds, &objId)
+		objID, _ := primitive.ObjectIDFromHex(i)
+		objIds = append(objIds, &objID)
 	}
-	// objId, _ := primitive.ObjectIDFromHex(id)
-	// filter := bson.D{{Key: "_id", Value: objId}}
-
-	// err := coll.FindOne(context.TODO(), filter).Decode(&result)
 	cursor, err := coll.Find(ctx, bson.M{"_id": bson.M{"$in": objIds}})
 
 	if err != nil {
@@ -223,8 +224,8 @@ func (m *UniversalModel) Update(ctx context.Context, id string) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
-	objId, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.D{{Key: "_id", Value: objId}}
+	objID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objID}}
 	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
 
 	result, err := coll.UpdateOne(ctx, filter,
