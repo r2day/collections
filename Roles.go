@@ -123,7 +123,9 @@ func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams 
 	logCtx := log.WithField("merchantID", merchantID).WithField("urlParams.FilterMap", urlParams.FilterMap)
 	for key, val := range urlParams.FilterMap {
 		// 判断是否是通过id查询
-		if m.ResourceName() == key {
+		// 则进行转换
+		// 一般对应于 ReferenceArrayInput 和 ReferenceManyField
+		if m.ResourceName() == key || key == "id" {
 			// string to array
 			results, err := m.GetMany(ctx, val)
 			if err != nil {
