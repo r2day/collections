@@ -127,7 +127,7 @@ func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams 
 		// 一般对应于 ReferenceArrayInput 和 ReferenceManyField
 		if m.ResourceName() == key || key == "id" {
 			// string to array
-			results, err := m.GetMany(ctx, val)
+			results, err := m.GetManyInIds(ctx, val)
 			if err != nil {
 				logCtx.Error(err)
 				return nil, 0, err
@@ -139,6 +139,11 @@ func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams 
 			filters = append(filters, bm)
 		}
 	}
+
+	// 添加状态过滤器
+	filterByStatus := bson.E{Key: "status", Value: urlParams.FilterCommon.Status}
+	filters = append(filters, filterByStatus)
+
 	logCtx.WithField("filters", filters).Info("final filters has been combine")
 	// 获取总数（含过滤规则）
 	totalCounter, err := coll.CountDocuments(context.TODO(), filters)
@@ -202,8 +207,8 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 	return result, nil
 }
 
-// GetMany 获取条件查询的结果
-func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*UniversalModel, error) {
+// GetManyInIds 获取条件查询的结果
+func (m *UniversalModel) GetManyInIds(ctx context.Context, ids []string) ([]*UniversalModel, error) {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
 	coll := db.MDB.Collection(ManagerRoleCollection)
