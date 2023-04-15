@@ -120,28 +120,32 @@ func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams 
 	results := make([]*UniversalModel, 0)
 	// 声明数据库过滤器
 	filters := bson.D{{Key: "merchant_id", Value: merchantID}}
+	logCtx := log.WithField("merchantID", merchantID).WithField("urlParams.FilterMap", urlParams.FilterMap)
 	for key, val := range urlParams.FilterMap {
 		// 判断是否是通过id查询
 		if m.ResourceName() == key {
 			// string to array
 			results, err := m.GetMany(ctx, val)
 			if err != nil {
-				log.Error(err)
+				logCtx.Error(err)
 				return nil, 0, err
 			}
+			logCtx.WithField("results", results).Warning("is reference request")
 			return results, int64(len(results)), nil
 		} else {
 			bm := bson.E{Key: key, Value: val}
 			filters = append(filters, bm)
 		}
 	}
-	log.WithField("filters", filters).Info("############")
+	logCtx.WithField("filters", filters).Info("final filters has been combine")
 	// 获取总数（含过滤规则）
 	totalCounter, err := coll.CountDocuments(context.TODO(), filters)
 	if err == mongo.ErrNoDocuments {
+		logCtx.Error(err)
 		return nil, 0, err
 	}
 	if err != nil {
+		logCtx.Error(err)
 		return nil, 0, err
 	}
 
@@ -160,14 +164,17 @@ func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams 
 	// 获取数据列表
 	cursor, err := coll.Find(ctx, filters, opt)
 	if err == mongo.ErrNoDocuments {
+		logCtx.Error(err)
 		return nil, totalCounter, err
 	}
 
 	if err != nil {
+		logCtx.Error(err)
 		return nil, totalCounter, err
 	}
 
 	if err = cursor.All(context.TODO(), &results); err != nil {
+		logCtx.Error(err)
 		return nil, totalCounter, err
 	}
 	return results, totalCounter, nil
@@ -183,11 +190,11 @@ func (m *UniversalModel) Detail(ctx context.Context, id string) (*UniversalModel
 	result := &UniversalModel{}
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objID}}
-
+	logCtx := log.WithField("filter", filter)
 	err := coll.FindOne(context.TODO(), filter).Decode(&result)
 
 	if err != nil {
-		log.WithField("id", id).Error(err)
+		logCtx.Error(err)
 		return nil, err
 	}
 	return result, nil
@@ -201,6 +208,7 @@ func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*Universa
 	// 绑定查询结果
 	results := make([]*UniversalModel, 0)
 	objIds := make([]*primitive.ObjectID, 0)
+	logCtx := log.WithField("ids", ids)
 
 	for _, i := range ids {
 		objID, _ := primitive.ObjectIDFromHex(i)
@@ -209,11 +217,12 @@ func (m *UniversalModel) GetMany(ctx context.Context, ids []string) ([]*Universa
 	cursor, err := coll.Find(ctx, bson.M{"_id": bson.M{"$in": objIds}})
 
 	if err != nil {
-		log.WithField("ids", ids).Error(err)
+		logCtx.Error(err)
 		return nil, err
 	}
 
 	if err = cursor.All(ctx, &results); err != nil {
+		logCtx.Error(err)
 		return nil, err
 	}
 	return results, nil
