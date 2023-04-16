@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/r2day/base v1.6.7
 	github.com/r2day/db v0.3.2
+	github.com/r2day/rest v0.1.7
 	github.com/sirupsen/logrus v1.9.0
 	go.mongodb.org/mongo-driver v1.11.3
 )
@@ -27,7 +28,6 @@ require (
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/r2day/rest v0.1.7 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
