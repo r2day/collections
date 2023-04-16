@@ -141,8 +141,10 @@ func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams 
 	}
 
 	// 添加状态过滤器
-	filterByStatus := bson.E{Key: "status", Value: urlParams.FilterCommon.Status}
-	filters = append(filters, filterByStatus)
+	if urlParams.HasFilter {
+		filterByStatus := bson.E{Key: "status", Value: urlParams.FilterCommon.Status}
+		filters = append(filters, filterByStatus)
+	}
 
 	logCtx.WithField("filters", filters).Info("final filters has been combine")
 	// 获取总数（含过滤规则）
