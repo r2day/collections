@@ -2,13 +2,14 @@ package clog
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	rtime "github.com/r2day/base/time"
 	"github.com/r2day/db"
 	"github.com/r2day/rest"
 	log "github.com/sirupsen/logrus"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -47,10 +48,10 @@ func (m *Model) Create(ctx context.Context) (string, error) {
 func (m *Model) Delete(ctx context.Context, id string) error {
 	// TODO result using custom struct instead of bson.M
 	// because you should avoid to export something to customers
+	logCtx := log.WithField("id", id)
 	coll := db.MDB.Collection(m.CollectionName())
 	objID, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.D{{Key: "_id", Value: objID}}
-	logCtx := log.WithField("id", id)
 	// 执行删除
 	result, err := coll.DeleteOne(ctx, filter)
 
@@ -137,7 +138,7 @@ func (m *Model) Update(ctx context.Context, id string) error {
 
 	if result.MatchedCount < 1 {
 		log.WithField("id", id).Warning("no matched record")
-		return errors.New("no matched record")
+		return nil
 	}
 
 	return nil
