@@ -83,6 +83,7 @@ func (m *UniversalModel) SimpleSave(ctx context.Context) (string, error) {
 	// 插入记录
 	result, err := coll.InsertOne(ctx, m)
 	if err != nil {
+		log.WithField("m", m).Error(err)
 		return "", err
 	}
 	stringObjectID := result.InsertedID.(primitive.ObjectID).Hex()
@@ -116,11 +117,16 @@ func (m *UniversalModel) Delete(ctx context.Context, id string) error {
 // List 获取列表
 func (m *UniversalModel) List(ctx context.Context, merchantID string, urlParams *rest.UrlParams) ([]*UniversalModel, int64, error) {
 	coll := db.MDB.Collection(ManagerRoleCollection)
-	// 绑定查询结果
+	// 声明需要返回的列表
 	results := make([]*UniversalModel, 0)
-	// 声明数据库过滤器
-	filters := bson.D{{Key: "merchant_id", Value: merchantID}}
+	// 声明日志基本信息
 	logCtx := log.WithField("merchantID", merchantID).WithField("urlParams.FilterMap", urlParams.FilterMap)
+	// 声明数据库过滤器
+	// 定义基本过滤规则
+	// 以商户id为基本命名空间
+	filters := bson.D{{Key: "merchant_id", Value: merchantID}}
+	// 添加更多过滤器
+	// 根据用户规则进行筛选
 	for key, val := range urlParams.FilterMap {
 		// 判断是否是通过id查询
 		// 则进行转换
