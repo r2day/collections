@@ -48,7 +48,7 @@ type RoleModel struct {
 	CreatedAt string `json:"created_at" bson:"created_at"`
 	// 更新时间
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
-	// 账号状态
+	// 状态
 	Status bool `json:"status"  bson:"status"`
 
 	// 商户号
