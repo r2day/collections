@@ -22,7 +22,7 @@ type Model struct {
 	// 创建时（用户上传的数据为空，所以默认可以不传该值)
 	ID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	// 商户号
-	MerchantID string `json:"-" bson:"merchant_id"`
+	MerchantID string `json:"merchant_id" bson:"merchant_id"`
 	// 创建者
 	AccountID string `json:"account_id" bson:"account_id"`
 	// 创建时间
