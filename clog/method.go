@@ -22,7 +22,7 @@ func (m *Model) ResourceName() string {
 
 // CollectionName 返回表名称
 func (m *Model) CollectionName() string {
-	return collectionNamePrefix + modelName + collectionNamePrefix
+	return collectionNamePrefix + modelName + collectionNameSubffix
 }
 
 // Create 创建
@@ -148,7 +148,7 @@ func (m *Model) Update(ctx context.Context, id string) error {
 
 // GetList 获取列表
 // getList	GET http://my.api.url/posts?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
-func (m *Model) GetList(ctx context.Context, merchantID string, urlParams *rest.UrlParams) ([]*Model, int64, error) {
+func (m *Model) GetList(ctx context.Context, merchantID string, accountID string, urlParams *rest.UrlParams) ([]*Model, int64, error) {
 	coll := db.MDB.Collection(m.CollectionName())
 	// 声明需要返回的列表
 	results := make([]*Model, 0)
@@ -173,10 +173,12 @@ func (m *Model) GetList(ctx context.Context, merchantID string, urlParams *rest.
 			}
 			logCtx.WithField("results", results).Warning("is reference request")
 			return results, int64(len(results)), nil
-		} else {
-			bm := bson.E{Key: key, Value: val}
-			filters = append(filters, bm)
 		}
+
+		// 用户可以指定accountId
+		bm := bson.E{Key: key, Value: val}
+		filters = append(filters, bm)
+
 	}
 
 	// 添加状态过滤器
