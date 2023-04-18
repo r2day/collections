@@ -1,4 +1,4 @@
-package capp
+package crole
 
 import (
 	"github.com/r2day/collections"
@@ -14,7 +14,7 @@ const (
 	// 例如, _log, _config, _flow,
 	collectionNameSubffix = "_config"
 	// 这个需要用户根据具体业务完成设定
-	modelName = "app"
+	modelName = "role"
 )
 
 // 每一个应用表示一个大的模块，通常其子模块是一个个接口
@@ -40,8 +40,13 @@ type Model struct {
 	Status bool `json:"status"`
 	// 名称
 	Name string `json:"name" bson:"name"`
-	// 应用描述
+	// 描述
 	Desc string `json:"desc" bson:"desc"`
+	// 应用列表
+	// 存储应用的id
+	// 通过应用id 快速获得应用列表
+	Apps []string `json:"apps" bson:"apps"`
 	// AccessApi 可访问的api列表
+	// 即将废弃
 	AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
 }
