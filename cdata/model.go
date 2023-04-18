@@ -1,4 +1,4 @@
-package corg
+package cdata
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,8 +13,14 @@ const (
 	// 例如, _log, _config, _flow,
 	collectionNameSubffix = "_config"
 	// 这个需要用户根据具体业务完成设定
-	modelName = "org"
+	modelName = "data"
 )
+
+// 每一个应用表示一个大的模块，通常其子模块是一个个接口
+// 是有系统默认设定，用户无需修改
+// 用户只需要在创建角色的时候选择好需要的应用即可
+// 用户选择所需要的应用后->完成角色创建->系统自动拷贝应用具体信息到角色下
+// 此时用户可以针对当前的角色中具体的项再自行选择是否移除部分接口，从而进行更精细的权限管理
 
 // Model 模型
 type Model struct {
@@ -31,8 +37,13 @@ type Model struct {
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
 	// 状态
 	Status bool `json:"status"`
-
-	// 用户根据业务需求定义的字段
-	// 组织名称
+	// 名称
+	// 公开/组织/集团/
 	Name string `json:"name" bson:"name"`
+	// 应用描述
+	Desc string `json:"desc" bson:"desc"`
+
+	// 数据等级
+	// 1 级数据表示该角色仅能访问公开类型的数据
+	Level uint `json:"level" bson:"level"`
 }
