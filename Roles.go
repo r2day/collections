@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	collections "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,23 +22,6 @@ const (
 	// ManagerRoleCollection 角色数据表
 	ManagerRoleCollection = "sys_manage_role"
 )
-
-// APIInfo 接口信息
-type APIInfo struct {
-	// 路径
-	Path string `json:"path" bson:"path"`
-	// 名称
-	Name string `json:"name" bson:"name"`
-	// 描述
-	Desc string `json:"desc" bson:"desc"`
-	// 是否禁用
-	Disable bool `json:"disable" bson:"disable"`
-	// 是否可以访问详情
-	CanViewDetail bool `json:"can_view_detail" bson:"can_view_detail"`
-	// 是否在sidebar中隐藏
-	// 默认false， 表示默认不隐藏
-	HideOnSidebar bool `json:"hide_on_sidebar" bson:"hide_on_sidebar"`
-}
 
 // RoleModel 角色模型
 type RoleModel struct {
@@ -57,7 +41,7 @@ type RoleModel struct {
 	// 角色名称
 	Name string `json:"name"`
 	// AccessApi 可访问的api列表
-	AccessAPI []APIInfo `json:"access_api"  bson:"access_api"`
+	AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
 }
 
 // UniversalModel 定义类型名称（别名）
