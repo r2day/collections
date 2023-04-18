@@ -38,6 +38,8 @@ type Model struct {
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
 	// 状态
 	Status bool `json:"status"`
+	// 名称
+	Name string `json:"name" bson:"name"`
 
 	// AccessApi 可访问的api列表
 	AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
