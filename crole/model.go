@@ -1,7 +1,6 @@
 package crole
 
 import (
-	"github.com/r2day/collections"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -48,5 +47,7 @@ type Model struct {
 	Apps []string `json:"apps" bson:"apps"`
 	// AccessApi 可访问的api列表
 	// 即将废弃
-	AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
+	// AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
+	// 根据角色的最低级别写入
+	AccessLevel uint `json:"access_level" bson:"access_level"`
 }
