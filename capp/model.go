@@ -1,4 +1,4 @@
-package clog
+package capp
 
 import (
 	"github.com/r2day/collections"
