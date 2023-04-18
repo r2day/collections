@@ -157,7 +157,7 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 	// 声明数据库过滤器
 	// 定义基本过滤规则
 	// 以商户id为基本命名空间
-	filters := bson.D{{Key: "merchant_id", Value: merchantID}}
+	filters := bson.D{{Key: "merchant_id", Value: merchantID}, {"access_level", bson.D{{"$lte", m.AccessLevel}}}}
 	// 添加更多过滤器
 	// 根据用户规则进行筛选
 	for key, val := range urlParams.FilterMap {

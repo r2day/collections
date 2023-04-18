@@ -45,5 +45,6 @@ type Model struct {
 
 	// 数据等级
 	// 1 级数据表示该角色仅能访问公开类型的数据
-	Level uint `json:"level" bson:"level"`
+	// 根据角色的最低级别写入
+	AccessLevel uint `json:"access_level" bson:"access_level"`
 }

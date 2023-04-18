@@ -42,6 +42,9 @@ type Model struct {
 	Name string `json:"name" bson:"name"`
 	// 应用描述
 	Desc string `json:"desc" bson:"desc"`
+	// 根据角色的最低级别写入
+	AccessLevel uint `json:"access_level" bson:"access_level"`
+
 	// AccessApi 可访问的api列表
 	AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
 }
