@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	collections "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -41,7 +40,7 @@ type RoleModel struct {
 	// 角色名称
 	Name string `json:"name"`
 	// AccessApi 可访问的api列表
-	AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
+	AccessAPI []APIInfo `json:"access_api"  bson:"access_api"`
 }
 
 // UniversalModel 定义类型名称（别名）
