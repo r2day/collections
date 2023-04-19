@@ -38,6 +38,8 @@ type Model struct {
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
 	// 状态
 	Status bool `json:"status"`
+	// 根据角色的最低级别写入
+	AccessLevel uint `json:"access_level" bson:"access_level"`
 
 	// 客户编号
 	CustomerID string `json:"customer_id" bson:"customer_id"`
