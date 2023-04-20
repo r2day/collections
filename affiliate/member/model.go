@@ -59,7 +59,7 @@ type Model struct {
 	RegisterDate string `json:"register_date" bson:"register_date"`
 	// 优惠券
 	// 可用的数量
-	Coupon string `json:"coupon" bson:"coupon"`
+	Coupon int `json:"coupon" bson:"coupon"`
 	// 手机号验证
 	// 会员迁移后需要进行短信验证完成数据与账号的绑定
 	Verify bool `json:"verify"`
