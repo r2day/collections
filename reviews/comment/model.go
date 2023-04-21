@@ -53,7 +53,7 @@ type Model struct {
 	// 产品id
 	ProductID string `json:"product_id" bson:"product_id"`
 	// 评星
-	Rating string `json:"rating" bson:"rating"`
+	Rating uint `json:"rating" bson:"rating"`
 	// 评论内容
 	Content string `json:"content" bson:"content"`
 	// 评论状态
