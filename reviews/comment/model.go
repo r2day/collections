@@ -57,7 +57,7 @@ type Model struct {
 	// 评论内容
 	Content string `json:"content" bson:"content"`
 	// 评论状态
-	ContentStatus string `json:"content_status" bson:"content_status"`
+	CommentStatus string `json:"comment_status" bson:"comment_status"`
 	// 图片
 	Pictures []string `json:"pictures" bson:"pictures"`
 }
