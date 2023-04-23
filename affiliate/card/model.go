@@ -17,6 +17,34 @@ const (
 	modelName = "card"
 )
 
+// DebitQuota 挂帐额度
+type DebitQuota struct {
+	// 挂帐总额度
+	Total float64 `json:"total" bson:"total"`
+	// 挂帐剩余额度
+	Left float64 `json:"left" bson:"left"`
+	// 已用额度
+	Used float64 `json:"used" bson:"used"`
+}
+
+
+
+// Stored 储值
+type Stored struct {
+	// 总额
+	Total float64 `json:"total" bson:"total"`
+	// 总数
+	Counter uint64 `json:"counter" bson:"counter"`
+}
+
+// Consumption 消费
+type Consumption struct {
+	// 总额
+	Total float64 `json:"total" bson:"total"`
+	// 总数
+	Counter uint64 `json:"counter" bson:"counter"`
+}
+
 // Assets 资产信息
 type Assets struct {
 	Balance float64 `json:"balance"  bson:"balance"`
@@ -28,21 +56,13 @@ type Assets struct {
 	Gift float64 `json:"gift" bson:"gift"`
 	// 积分余额
 	Integral uint64 `json:"integral" bson:"integral"`
-	// 累计储值总额
-	TotalBalance float64 `json:"total_balance" bson:"total_balance"`
-	//累计储值次数
-	TotalBalanceCounter uint64 `json:"total_balance_counter" bson:"total_balance_counter"`
-	// 累计消费总额
-	TotalCumulativeConsumption float64 `json:"total_cumulative_consumption" bson:"total_cumulative_consumption"`
-	// 累计消费总额
-	TotalCumulativeConsumptionCounter uint64 `json:"total_cumulative_consumption_counter" bson:"total_cumulative_consumption_counter"`
-	// 挂帐总额度
-	DebitTotalLimit float64 `json:"debit_total_limit" bson:"debit_total_limit"`
-	// 挂帐剩余额度
-	DebitLeftLimit float64 `json:"debit_left_limit" bson:"debit_left_limit"`
 
-	// 已用额度
-	DebitUsedLimit float64 `json:"debit_used_limit" bson:"debit_used_limit"`
+	// 储值信息
+	StoredValue Stored `json:"stored_value" bson:"stored_value"`
+	// 消费信息
+	ConsumptionValue Consumption `json:"consumption_value" bson:"consumption_value"`
+	// 挂帐额度
+	Debit DebitQuota `json:"debit_quota" bson:"debit_quota"`
 }
 
 // 序号	卡号	客户编号	手机号	姓名	性别	生日

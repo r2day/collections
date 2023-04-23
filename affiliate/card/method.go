@@ -2,6 +2,7 @@ package card
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	rtime "github.com/r2day/base/time"
@@ -242,4 +243,40 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 	}
 	return results, totalCounter, nil
 
+}
+
+// Render 返回渲染对象
+func (m DebitQuota) Render(total, left, used string) DebitQuota {
+	totalInt, _ := strconv.Atoi(total)
+	m.Total = float64(totalInt)
+
+	leftInt, _ := strconv.Atoi(left)
+	m.Left = float64(leftInt)
+
+	usedInt, _ := strconv.Atoi(used)
+	m.Used = float64(usedInt)
+
+	return m
+}
+
+// Render 返回渲染对象
+func (m Stored) Render(total, counter string) Stored {
+	totalInt, _ := strconv.Atoi(total)
+	m.Total = float64(totalInt)
+
+	counterInt, _ := strconv.Atoi(counter)
+	m.Counter = uint64(counterInt)
+
+	return m
+}
+
+// Render 返回渲染对象
+func (m Consumption) Render(total, counter string) Consumption {
+	totalInt, _ := strconv.Atoi(total)
+	m.Total = float64(totalInt)
+
+	counterInt, _ := strconv.Atoi(counter)
+	m.Counter = uint64(counterInt)
+
+	return m
 }
