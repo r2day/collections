@@ -104,10 +104,6 @@ type Model struct {
 	BasicInfo BasicInformation `json:"basic_info" bson:"basic_info"`
 	// 开启状态
 	Enables EnablesSwitch `json:"enables" bson:"enables"`
-	// 收入科目
-	Income string `json:"income" bson:"income"`
-	// 出品部门
-	ProductionDepartment string `json:"production_department" bson:"production_department"`
 	// 规格列表
 	Specification []SpecificationPrice `json:"specification_list" bson:"specification_list"`
 	// 支持业务
