@@ -43,6 +43,8 @@ type Model struct {
 	SupplierName string `json:"supplier_name" bson:"supplier_name"`
 	// 供应商助记码
 	Mnemonic string `json:"mnemonic" bson:"mnemonic"`
+	// 供货商类别编码(必填)
+	SupplierCategoryID string `json:"supplier_category_id" bson:"supplier_category_id"`
 	// 供货商类别名称(必填)
 	SupplierCategory string `json:"supplier_category" bson:"supplier_category"`
 	// 供货商联系人
