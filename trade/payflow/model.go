@@ -45,8 +45,8 @@ type Model struct {
 	FinancialEntity string `json:"financial_entity" bson:"financial_entity"`
 	// 交易信息 Information
 	Information string `json:"information" bson:"information"`
-		// 交易类型
-		TradeCategory string `json:"trade_category" bson:"trade_category"`
+	// 交易类型
+	TradeCategory string `json:"trade_category" bson:"trade_category"`
 	// 交易子类型
 	TradeSubCategory string `json:"trade_sub_category" bson:"trade_sub_category"`
 	// 交易金额

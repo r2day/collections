@@ -1,4 +1,4 @@
-package payflow
+package refundflow
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package payflow
+package refundflow
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
