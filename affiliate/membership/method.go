@@ -1,8 +1,7 @@
-package payflow
+package membership
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	rtime "github.com/r2day/base/time"
@@ -243,15 +242,4 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 	}
 	return results, totalCounter, nil
 
-}
-
-// RenderStatus 返回转义后的状态
-func (m *Model) RenderStatus(status string) bool {
-	return status == "支付成功"
-}
-
-// RenderAmount 返回转义后的金额
-func (m *Model) RenderAmount(amount string) float64 {
-	amountInt, _ := strconv.Atoi(amount)
-	return float64(amountInt)
 }
