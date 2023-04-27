@@ -63,4 +63,6 @@ type Model struct {
 	// 手机号验证
 	// 会员迁移后需要进行短信验证完成数据与账号的绑定
 	Verify bool `json:"verify"`
+	//客户头像
+	Avatar string `json:"avatar" bson:"avatar"`
 }
