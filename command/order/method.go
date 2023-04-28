@@ -199,6 +199,12 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 			filterByGender := bson.E{Key: "gender", Value: urlParams.FilterCommon.Gender}
 			filters = append(filters, filterByGender)
 		}
+
+		// 添加更多过滤器
+		if urlParams.FilterCommon.OrderCategory != "" {
+			filterByGender := bson.E{Key: "order_category", Value: urlParams.FilterCommon.OrderCategory}
+			filters = append(filters, filterByGender)
+		}
 	}
 
 	logCtx.WithField("filters", filters).Debug("final filters has been combine")
