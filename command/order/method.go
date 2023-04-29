@@ -254,17 +254,17 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 // RenderAmount 返回转义后的金额
 func (m *Model) RenderAmount(amount, paid, total, vip, deduction, refund string) Amounter {
 	a := Amounter{}
-	amountInt, _ := strconv.Atoi(amount)
-	a.Amount = float64(amountInt)
-	paidInt, _ := strconv.Atoi(paid)
-	a.Paid = float64(paidInt)
-	totalInt, _ := strconv.Atoi(total)
-	a.Total = float64(totalInt)
-	vipInt, _ := strconv.Atoi(vip)
-	a.Total = float64(vipInt)
-	deductionInt, _ := strconv.Atoi(deduction)
-	a.Deduction = float64(deductionInt)
-	refundInt, _ := strconv.Atoi(refund)
-	a.Refund = float64(refundInt)
+	amountFloat64, _ := strconv.ParseFloat(amount, 64)
+	a.Amount = amountFloat64
+	paidtFloat64, _ := strconv.ParseFloat(paid, 64)
+	a.Paid = paidtFloat64
+	totalFloat64, _ := strconv.ParseFloat(total, 64)
+	a.Total = totalFloat64
+	vipFloat64, _ := strconv.ParseFloat(vip, 64)
+	a.VIP = vipFloat64
+	deductionFloat64, _ := strconv.ParseFloat(deduction, 64)
+	a.Deduction = deductionFloat64
+	refundFloat64, _ := strconv.ParseFloat(refund, 64)
+	a.Refund = refundFloat64
 	return a
 }
