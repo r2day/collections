@@ -202,7 +202,7 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 
 		// 添加更多过滤器
 		if urlParams.FilterCommon.Level != "" {
-			filterByLevel := bson.E{Key: "card_info", Value: urlParams.FilterCommon.Level}
+			filterByLevel := bson.E{Key: "card_info.level", Value: urlParams.FilterCommon.Level}
 			filters = append(filters, filterByLevel)
 		}
 	}
