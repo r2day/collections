@@ -120,7 +120,7 @@ type Model struct {
 	// 会员注册协议
 	Protocol string `json:"protocol"`
 	// 结算设置
-	SettlementInfo Settlement `json:"settlement_info" bson:"background_color"`
+	SettlementInfo Settlement `json:"settlement_info" bson:"settlement_info"`
 	// 费用设置
 	FeeSettingInfo FeeSetting `json:"fee_setting_info" bson:"fee_setting_info"`
 	// 交易设置
