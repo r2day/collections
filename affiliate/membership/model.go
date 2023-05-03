@@ -73,8 +73,12 @@ type TradeSetting struct {
 type ExpireSetting struct {
 	// 发票有效期 -1 表示永久
 	Invoice int `json:"invoice" bson:"invoice"`
+	// 发票有效期选择
+	InvoiceSelect int `json:"invoice_select" bson:"invoice_select"`
 	// 会员有效期 -1 表示永久
 	Member int `json:"member" bson:"member"`
+	// 会员有效期选择
+	MemberSelect string `json:"member_select" bson:"member_select"`
 }
 
 // ParamsSetting 开卡参数设置
