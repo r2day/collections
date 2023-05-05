@@ -16,3 +16,24 @@ type APIInfo struct {
 	// 默认false， 表示默认不隐藏
 	HideOnSidebar bool `json:"hide_on_sidebar" bson:"hide_on_sidebar"`
 }
+
+// Address 地址
+// Country Province City County District
+type Address struct {
+	// 国家
+	Country string `json:"country" bson:"country"`
+	// 省
+	Province string `json:"province" bson:"province"`
+	// 市
+	City string `json:"city" bson:"city"`
+	// 区
+	District string `json:"district" bson:"district"`
+	// 街道
+	Street string `json:"street" bson:"street"`
+	// 详情地址
+	Detail string `json:"detail" bson:"detail"`
+	// 详情地址
+
+	// 金纬度
+	LatitudeAndLongitude string `json:"latitude_and_longitude" bson:"latitude_and_longitude"`
+}

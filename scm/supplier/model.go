@@ -1,6 +1,7 @@
 package supplier
 
 import (
+	"github.com/r2day/collections"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -53,6 +54,6 @@ type Model struct {
 	Phone string `json:"phone" bson:"phone"`
 	// 邮箱
 	Email string `json:"email" bson:"email"`
-	// 地址
-	Address string `json:"address" bson:"address"`
+	// 地址信息
+	AddressInfo collections.Address `json:"address_info" bson:"address_info"`
 }

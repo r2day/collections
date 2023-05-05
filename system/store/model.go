@@ -1,6 +1,7 @@
 package store
 
 import (
+	"github.com/r2day/collections"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,27 +17,6 @@ const (
 	// 这个需要用户根据具体业务完成设定
 	modelName = "store"
 )
-
-// Address 地址
-// Country Province City County District
-type Address struct {
-	// 国家
-	Country string `json:"country" bson:"country"`
-	// 省
-	Province string `json:"province" bson:"province"`
-	// 市
-	City string `json:"city" bson:"city"`
-	// 区
-	District string `json:"district" bson:"district"`
-	// 街道
-	Street string `json:"street" bson:"street"`
-	// 详情地址
-	Detail string `json:"detail" bson:"detail"`
-	// 详情地址
-
-	// 金纬度
-	LatitudeAndLongitude string `json:"latitude_and_longitude" bson:"latitude_and_longitude"`
-}
 
 // Model 模型
 // 序号	城市	店铺名称	订单号	账单号	三方单号	支付流水号	顾客姓名	顾客电话	顾客地址
@@ -88,5 +68,5 @@ type Model struct {
 	// 营业时间
 	WorkingTime string `json:"working_time" bson:"working_time"`
 	// 地址信息
-	AddressInfo Address `json:"address_info" bson:"address_info"`
+	AddressInfo collections.Address `json:"address_info" bson:"address_info"`
 }
