@@ -41,6 +41,8 @@ type Model struct {
 	Name string `json:"name" bson:"name"`
 	// 描述
 	Desc string `json:"desc" bson:"desc"`
+	// 图片
+	Image string `json:"image" bson:"image"`
 	// 应用列表
 	// 存储应用的id
 	// 通过应用id 快速获得应用列表
