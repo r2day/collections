@@ -1,4 +1,4 @@
-package clog
+package log
 
 import (
 	"context"
@@ -22,7 +22,7 @@ func (m *Model) ResourceName() string {
 
 // CollectionName 返回表名称
 func (m *Model) CollectionName() string {
-	return collectionNamePrefix + modelName + collectionNameSubffix
+	return collectionNamePrefix + modelName + collectionNameSuffix
 }
 
 // Create 创建

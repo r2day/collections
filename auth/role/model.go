@@ -1,4 +1,4 @@
-package clog
+package role
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -9,12 +9,18 @@ const (
 	// 可以根据具体业务的需要进行定义
 	// 例如: sys_, scm_, customer_, order_ 等
 	collectionNamePrefix = "sys_"
-	// CollectionNameSubffix 后缀
+	// CollectionNameSuffix 后缀
 	// 例如, _log, _config, _flow,
-	collectionNameSubffix = "_log"
+	collectionNameSuffix = "_config"
 	// 这个需要用户根据具体业务完成设定
-	modelName = "signin"
+	modelName = "role"
 )
+
+// 每一个应用表示一个大的模块，通常其子模块是一个个接口
+// 是有系统默认设定，用户无需修改
+// 用户只需要在创建角色的时候选择好需要的应用即可
+// 用户选择所需要的应用后->完成角色创建->系统自动拷贝应用具体信息到角色下
+// 此时用户可以针对当前的角色中具体的项再自行选择是否移除部分接口，从而进行更精细的权限管理
 
 // Model 模型
 type Model struct {
@@ -31,20 +37,17 @@ type Model struct {
 	UpdatedAt string `json:"updated_at" bson:"updated_at"`
 	// 状态
 	Status bool `json:"status"`
+	// 名称
+	Name string `json:"name" bson:"name"`
+	// 描述
+	Desc string `json:"desc" bson:"desc"`
+	// 应用列表
+	// 存储应用的id
+	// 通过应用id 快速获得应用列表
+	Apps []string `json:"apps" bson:"apps"`
+	// AccessApi 可访问的api列表
+	// 即将废弃
+	// AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
 	// 根据角色的最低级别写入
 	AccessLevel uint `json:"access_level" bson:"access_level"`
-
-	// 用户根据业务需求定义的字段
-	// 客户IP
-	ClientIP string `json:"client_ip" bson:"client_ip"`
-	// 远程IP
-	RemoteIP string `json:"remote_ip"  bson:"remote_ip"`
-	// 路径
-	FullPath string `json:"full_path"  bson:"full_path"`
-	// 请求方法/操作
-	Method string `json:"method"  bson:"method"`
-	// 相应代码
-	RespCode int `json:"resp_code"  bson:"resp_code"`
-	// 操作对象id
-	TargetID string `json:"target_id"  bson:"target_id"`
 }
