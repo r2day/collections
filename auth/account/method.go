@@ -170,6 +170,27 @@ func (m *Model) Update(ctx context.Context, id string) error {
 	return nil
 }
 
+// UpdateById 通过id更新数据库
+// 直接使用mongo的id进行更新
+// 这种情况一般用于先通过其他字段，例如phone 查找到记录
+// 通过读取记录中的_id 进行更新
+func (m *Model) UpdateById(ctx context.Context) error {
+	coll := db.MDB.Collection(m.CollectionName())
+	// 更新数据库
+	m.UpdatedAt = rtime.FomratTimeAsReader(time.Now().Unix())
+	filter := bson.D{{Key: "_id", Value: m.ID}}
+	result, err := coll.UpdateOne(ctx, filter,
+		bson.D{{Key: "$set", Value: m}})
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount < 1 {
+		log.WithField("id", m.ID).Warning("no matched record")
+		return nil
+	}
+	return nil
+}
+
 // GetList 获取列表
 // getList	GET http://my.api.url/posts?sort=["title","ASC"]&range=[0, 24]&filter={"title":"bar"}
 func (m *Model) GetList(ctx context.Context, merchantID string, accountID string, urlParams *rest.UrlParams) ([]*Model, int64, error) {
