@@ -52,4 +52,26 @@ type Model struct {
 	// AccessAPI []collections.APIInfo `json:"access_api"  bson:"access_api"`
 	// 根据角色的最低级别写入
 	AccessLevel uint `json:"access_level" bson:"access_level"`
+
+	// 图片
+	Permissions PermissionsModel `json:"permissions" bson:"permissions"`
+}
+
+// PermissionsModel 模型
+// 记录角色对接口的操作细节
+type PermissionsModel struct {
+	// 商户号
+	RoleID string `json:"role_id" bson:"role_id"`
+	// 商户号
+	AppID string `json:"app_id" bson:"app_id"`
+	// 读
+	Read bool `json:"read" bson:"read"`
+	// 写
+	Write bool `json:"write" bson:"write"`
+	// 改
+	Update bool `json:"update" bson:"update"`
+	// 详情
+	Detail bool `json:"detail" bson:"detail"`
+	// 删除
+	Delete bool `json:"delete" bson:"delete"`
 }
