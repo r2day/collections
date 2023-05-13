@@ -8,7 +8,7 @@ const (
 	// CollectionNamePrefix 数据库表前缀
 	// 可以根据具体业务的需要进行定义
 	// 例如: sys_, scm_, customer_, order_ 等
-	collectionNamePrefix = "sys_"
+	collectionNamePrefix = "auth_"
 	// CollectionNameSuffix 后缀
 	// 例如, _log, _config, _flow,
 	collectionNameSuffix = "_config"
@@ -54,7 +54,7 @@ type Model struct {
 	AccessLevel uint `json:"access_level" bson:"access_level"`
 
 	// 图片
-	Permissions PermissionsModel `json:"permissions" bson:"permissions"`
+	Permissions []PermissionsModel `json:"permissions" bson:"permissions"`
 }
 
 // PermissionsModel 模型
