@@ -60,10 +60,12 @@ type Model struct {
 // PermissionsModel 模型
 // 记录角色对接口的操作细节
 type PermissionsModel struct {
-	// 商户号
+	// 角色编号
 	RoleID string `json:"role_id" bson:"role_id"`
-	// 商户号
+	// 应用编号
 	AppID string `json:"app_id" bson:"app_id"`
+	// 请求路径
+	Path string `json:"path" bson:"path"`
 	// 读
 	Read bool `json:"read" bson:"read"`
 	// 写
