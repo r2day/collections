@@ -47,6 +47,8 @@ type Model struct {
 	RespCode int `json:"resp_code"  bson:"resp_code"`
 	// 操作对象id
 	TargetID string `json:"target_id"  bson:"target_id"`
+	// 接口名称
+	Name string `json:"name"  bson:"name"`
 	// 操作行为
 	Operation string `json:"operation"  bson:"operation"`
 }
