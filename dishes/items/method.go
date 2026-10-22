@@ -160,7 +160,7 @@ func (m *Model) GetList(ctx context.Context, merchantID string, accountID string
 	// 定义基本过滤规则
 	// 以商户id为基本命名空间
 	// 并且只能看到小于等于自己的级别的数据
-	filters := bson.D{{Key: "merchant_id", Value: merchantID}, {"access_level", bson.D{{"$lte", m.AccessLevel}}}}
+	filters := bson.D{{Key: "merchant_id", Value: merchantID}, {Key: "access_level", Value: bson.D{{Key: "$lte", Value: m.AccessLevel}}}}
 	// 添加更多过滤器
 	// 根据用户规则进行筛选
 	for key, val := range urlParams.FilterMap {
@@ -271,16 +271,16 @@ func (m EnablesSwitch) Render(isOpen, isOnShelves, isSupportSigns, isSupportNew,
 	isSupportRecommend, isSupportDiscount, isSupportDecimal, isSupportWeighing,
 	isSupportAutoJoin, isSupportSoldSeparately string) EnablesSwitch {
 
-	m.IsOpen = "启用" == isOpen
-	m.IsOnShelves = "是" == isOnShelves
-	m.IsSupportSigns = "是" == isSupportSigns
-	m.IsSupportNew = "是" == isSupportNew
-	m.IsSupportRecommend = "是" == isSupportRecommend
-	m.IsSupportDiscount = "是" == isSupportDiscount
-	m.IsSupportDecimal = "是" == isSupportDecimal
-	m.IsSupportWeighing = "是" == isSupportWeighing
-	m.IsSupportAutoJoin = "是" == isSupportAutoJoin
-	m.IsSupportSoldSeparately = "是" == isSupportSoldSeparately
+	m.IsOpen = isOpen == "启用"
+	m.IsOnShelves = isOnShelves == "是"
+	m.IsSupportSigns = isSupportSigns == "是"
+	m.IsSupportNew = isSupportNew == "是"
+	m.IsSupportRecommend = isSupportRecommend == "是"
+	m.IsSupportDiscount = isSupportDiscount == "是"
+	m.IsSupportDecimal = isSupportDecimal == "是"
+	m.IsSupportWeighing = isSupportWeighing == "是"
+	m.IsSupportAutoJoin = isSupportAutoJoin == "是"
+	m.IsSupportSoldSeparately = isSupportSoldSeparately == "是"
 	return m
 }
 
